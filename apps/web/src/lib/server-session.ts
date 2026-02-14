@@ -11,7 +11,7 @@ export async function getServerSession() {
     return null;
   }
 
-  const response = await fetch(`${apiUrl}/api/auth/get-session`, {
+  const response = await fetch(`${apiUrl}/api/v1/auth/get-session`, {
     headers: {
       cookie: requestHeaders.get('cookie') ?? '',
     },

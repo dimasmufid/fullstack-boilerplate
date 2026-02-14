@@ -10,7 +10,9 @@ if (!process.env.DATABASE_URL) {
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  throw new Error('Missing DATABASE_URL. Set it in your environment or .env.local.');
+  throw new Error(
+    'Missing DATABASE_URL. Set it in your environment or .env.local.',
+  );
 }
 
 const sql = neon(databaseUrl);
