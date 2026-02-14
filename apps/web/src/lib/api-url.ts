@@ -1,12 +1,10 @@
-const DEFAULT_API_BASE_URL = "http://localhost:4000";
-
 function normalizeBaseUrl(url: string) {
   return url.replace(/\/+$/, "");
 }
 
 export function getClientApiBaseUrl() {
-  const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
-  const baseUrl = configuredApiUrl || DEFAULT_API_BASE_URL;
+  const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL?.trim() as string;
+  const baseUrl = configuredApiUrl;
 
   return normalizeBaseUrl(baseUrl);
 }

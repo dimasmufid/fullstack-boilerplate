@@ -38,6 +38,9 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        API_URL: ${API_URL}
     container_name: fullstack_web
     restart: unless-stopped
     depends_on:
