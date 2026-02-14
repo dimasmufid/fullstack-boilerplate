@@ -27,5 +27,5 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=prod-deps /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
-EXPOSE 3000
+EXPOSE 4000
 CMD ["node", "apps/api/dist/main.js"]
