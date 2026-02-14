@@ -1,167 +1,131 @@
-# Next.js Boilerplate
+# Fullstack Boilerplate
 
-A modern, production-ready Next.js boilerplate template featuring authentication, database integration, and a beautiful UI component library.
+Monorepo boilerplate built with Turborepo, containing:
 
-## 🚀 Tech Stack
+- `apps/web`: Next.js 16 frontend (React 19, Tailwind CSS v4, shadcn/ui)
+- `apps/api`: NestJS 11 backend (Better Auth + Drizzle ORM + Swagger)
 
-- **[Next.js 16](https://nextjs.org/)** - React framework with App Router
-- **[Bun](https://bun.sh/)** - Fast JavaScript runtime and package manager
-- **[Drizzle ORM](https://orm.drizzle.team/)** - TypeScript ORM for PostgreSQL
-- **[Better Auth](https://www.better-auth.com/)** - Modern authentication library
-- **[shadcn/ui](https://ui.shadcn.com/)** - Beautiful, accessible component library
-- **[Tailwind CSS v4](https://tailwindcss.com/)** - Utility-first CSS framework
-- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+## Tech Stack
 
-## ✨ Features
+- [Turborepo](https://turbo.build/repo)
+- [pnpm](https://pnpm.io/)
+- [Next.js](https://nextjs.org/)
+- [NestJS](https://nestjs.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Better Auth](https://www.better-auth.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [TypeScript](https://www.typescriptlang.org/)
 
-- 🔐 **Authentication** - Email/password authentication with Better Auth
-- 👤 **Admin Panel** - Built-in admin functionality with user management
-- 🎨 **UI Components** - Pre-configured shadcn/ui components (New York style)
-- 🌓 **Dark Mode** - Theme switching with next-themes
-- 📊 **Data Tables** - Advanced table components with sorting, filtering, and pagination
-- 📱 **Responsive Design** - Mobile-first responsive layouts
-- 🐳 **Docker Support** - Production-ready Dockerfile included
-- 🗄️ **Database Migrations** - Drizzle migrations for schema management
+## Prerequisites
 
-## 📋 Prerequisites
+- Node.js 20+
+- pnpm 10+
+- PostgreSQL (local or hosted)
 
-- [Bun](https://bun.sh/) (v1.2.0 or higher)
-- PostgreSQL database (local or hosted)
-- Node.js (for Docker builds)
+## Quick Start
 
-## 🏁 Getting Started
-
-### 1. Clone the repository
+1. Install dependencies:
 
 ```bash
-git clone <your-repo-url>
-cd boilerplate
+pnpm install
 ```
 
-### 2. Install dependencies
+2. Create environment file:
 
 ```bash
-bun install
+cp .env.example .env
 ```
 
-### 3. Set up environment variables
+3. Update `.env` values:
 
-Copy `.env.example` to `.env.local` and fill in your values:
+- `NEXT_PUBLIC_API_URL` (e.g. `http://localhost:4000`)
+- `API_URL` (e.g. `http://localhost:4000`)
+- `DATABASE_URL`
+- `BETTER_AUTH_SECRET` (generate with `openssl rand -hex 32`)
+- `BETTER_AUTH_URL` (API origin, e.g. `http://localhost:4000`)
+- `CORS_ORIGIN` (e.g. `http://localhost:3000`)
+- `BETTER_AUTH_COOKIE_DOMAIN` (optional, for cross-subdomain prod setup)
+
+4. Run migrations:
 
 ```bash
-cp .env.example .env.local
+pnpm db:migrate
 ```
 
-Required environment variables:
-- `DATABASE_URL` - PostgreSQL connection string
-- `BETTER_AUTH_SECRET` - Secret key for Better Auth (generate with `openssl rand -base64 32`)
-- `BETTER_AUTH_URL` - Your application URL (e.g., `http://localhost:3000`)
-
-### 4. Set up the database
-
-Run database migrations:
+5. Start both apps:
 
 ```bash
-bunx drizzle-kit push
+pnpm dev
 ```
 
-Or generate migrations:
+## Local Endpoints
+
+- Web: `http://localhost:3000`
+- API: `http://localhost:4000/api/v1`
+- Auth base path: `http://localhost:4000/api/v1/auth`
+- Swagger docs: `http://localhost:4000/docs`
+
+## Scripts
+
+Run from repository root:
+
+- `pnpm dev` - Start all apps in dev mode
+- `pnpm dev:web` - Start only web app
+- `pnpm dev:api` - Start only API app
+- `pnpm build` - Build all apps
+- `pnpm start` - Start all built apps
+- `pnpm lint` - Run lint tasks across apps
+- `pnpm db:generate` - Generate Drizzle migration files
+- `pnpm db:migrate` - Apply Drizzle migrations
+- `pnpm db:push` - Push schema directly to database
+
+API tests:
+
+- `pnpm --filter api test`
+- `pnpm --filter api test:e2e`
+- `pnpm --filter api test:cov`
+
+## Project Structure
+
+```text
+.
+├── apps/
+│   ├── web/
+│   │   ├── src/app
+│   │   ├── src/components
+│   │   ├── src/lib
+│   │   ├── src/hooks
+│   │   └── public/
+│   └── api/
+│       ├── src/
+│       └── test/
+├── drizzle/                # shared migration files
+├── drizzle.config.ts
+├── turbo.json
+└── pnpm-workspace.yaml
+```
+
+## Docker
+
+- Local PostgreSQL only:
 
 ```bash
-bunx drizzle-kit generate
-bunx drizzle-kit migrate
+docker compose up -d
 ```
 
-You can also use `npx drizzle-kit` if you prefer npm.
-
-### 5. Run the development server
+- Production compose setup:
 
 ```bash
-bun run dev
+docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+`docker-compose.prod.yml` expects an external Docker network named `dokploy-network`.
 
-## 📁 Project Structure
+## Notes
 
-```
-boilerplate/
-├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── (app)/             # Protected app routes
-│   │   │   ├── admin/         # Admin panel
-│   │   │   └── dashboard/     # Dashboard page
-│   │   ├── (auth)/            # Auth routes
-│   │   │   ├── sign-in/       # Sign in page
-│   │   │   └── sign-up/       # Sign up page
-│   │   └── api/               # API routes
-│   │       └── auth/          # Better Auth API routes
-│   ├── components/            # React components
-│   │   ├── ui/               # shadcn/ui components
-│   │   └── ...               # Custom components
-│   ├── db/                   # Database schema and config
-│   │   ├── auth-schema.ts    # Better Auth schema
-│   │   └── index.ts          # Drizzle database instance
-│   ├── lib/                  # Utilities and helpers
-│   │   ├── auth.ts           # Better Auth server config
-│   │   ├── auth-client.ts    # Better Auth client config
-│   │   └── utils.ts          # Utility functions
-│   └── hooks/                # Custom React hooks
-├── drizzle/                  # Database migrations
-├── public/                   # Static assets
-├── Dockerfile               # Docker configuration
-└── drizzle.config.ts        # Drizzle ORM configuration
-```
+- Both `apps/web` and `apps/api` load environment variables from the root `.env`.
+- API default port is `4000`; web default port is `3000`.
 
-## 🛠️ Available Scripts
+## License
 
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run start` - Start production server
-- `bun run lint` - Run ESLint
-
-## 🐳 Docker Deployment
-
-Build and run with Docker:
-
-```bash
-# Build the image
-docker build -t boilerplate .
-
-# Run the container
-docker run -p 3000:3000 \
-  -e DATABASE_URL=your_database_url \
-  -e BETTER_AUTH_SECRET=your_secret \
-  -e BETTER_AUTH_URL=http://localhost:3000 \
-  boilerplate
-```
-
-## 🔧 Configuration
-
-### Database
-
-The project uses Drizzle ORM with PostgreSQL. Configure your database connection in `drizzle.config.ts` and set the `DATABASE_URL` environment variable.
-
-### Authentication
-
-Better Auth is configured in `src/lib/auth.ts`. The admin plugin is enabled by default. Customize authentication providers and settings as needed.
-
-### UI Components
-
-shadcn/ui components are configured in `components.json`. Add new components using:
-
-```bash
-npx shadcn@latest add [component-name]
-```
-
-## 📚 Learn More
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
-- [Better Auth Documentation](https://www.better-auth.com/docs)
-- [shadcn/ui Documentation](https://ui.shadcn.com/docs)
-- [Bun Documentation](https://bun.sh/docs)
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
+[MIT](LICENSE)
