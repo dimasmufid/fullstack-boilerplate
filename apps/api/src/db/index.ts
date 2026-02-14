@@ -1,9 +1,11 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { config } from 'dotenv';
+import { resolve } from 'node:path';
 
 if (!process.env.DATABASE_URL) {
   config({ path: '.env.local' });
+  config({ path: resolve(process.cwd(), '../../.env.local') });
 }
 
 const databaseUrl = process.env.DATABASE_URL;

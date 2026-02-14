@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
 import dotenv from 'dotenv';
+import { resolve } from 'node:path';
 
 dotenv.config({ path: '.env.local' });
+dotenv.config({ path: resolve(process.cwd(), '../../.env.local') });
 dotenv.config();
 
 export default defineConfig({

@@ -1,32 +1,48 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `src/app/` contains the Next.js App Router pages, layouts, and route groups like `(app)` and `(auth)`.
-- `src/components/` holds shared UI building blocks; `src/components/ui/` includes shadcn-style primitives.
-- `src/lib/` is for utilities and helpers; `src/hooks/` for shared React hooks.
-- `src/db/` and `drizzle/` contain database code and migrations; `drizzle.config.ts` configures Drizzle.
-- `public/` stores static assets; `src/app/globals.css` defines global styles.
+This repository is a Turborepo with app packages in `apps/`.
+- `apps/web/`: Next.js frontend (`src/app`, `src/components`, `src/lib`, `src/hooks`, `public/`).
+- `apps/api/`: NestJS backend (`src/` for modules/services/controllers, `test/` for e2e tests).
+- Database assets:
+  - Web: `apps/web/src/db/` and `apps/web/drizzle/`
+  - API: `apps/api/src/db/` and `apps/api/drizzle/`
+- Root orchestration: `turbo.json`, `pnpm-workspace.yaml`, root `package.json`.
 
 ## Build, Test, and Development Commands
-- `npm run dev`: start the local Next.js dev server.
-- `npm run build`: create a production build.
-- `npm run start`: run the production build locally.
-- `npm run lint`: run ESLint with the Next.js config.
+Run commands from the repository root unless noted.
+- `pnpm dev`: start all apps in development via Turbo.
+- `pnpm dev:web`: run only the Next.js app.
+- `pnpm dev:api`: run only the NestJS API.
+- `pnpm build`: build all apps.
+- `pnpm lint`: run lint tasks across apps.
+
+API-specific commands (from root with filter, or in `apps/api`):
+- `pnpm --filter api test`: run unit tests (Jest).
+- `pnpm --filter api test:e2e`: run end-to-end tests.
+- `pnpm --filter api test:cov`: generate coverage report.
 
 ## Coding Style & Naming Conventions
-- TypeScript + React components live under `src/` and follow existing patterns.
-- Use the existing import aliases (e.g., `@/components`, `@/lib`, `@/hooks`) from `components.json`.
-- Follow ESLint rules from `eslint.config.mjs`; format to match surrounding code (no Prettier config is present).
-- Component filenames use `PascalCase.tsx`; hooks use `useX.ts`.
+- Language: TypeScript across web and API.
+- Use existing aliases in web code, e.g. `@/components`, `@/lib`, `@/hooks`.
+- Follow ESLint configs: `apps/web/eslint.config.mjs`, `apps/api/eslint.config.mjs`.
+- Web naming: React components in `PascalCase.tsx`; hooks as `useX.ts`.
+- Keep formatting consistent with surrounding files; run lint before opening a PR.
 
 ## Testing Guidelines
-- No test runner is configured yet (no `__tests__`, `*.test.*`, or `*.spec.*` files found).
-- If you add tests, document the runner and add a script in `package.json`, then keep test names consistent with the chosen tool.
+- API uses Jest with `*.spec.ts` naming (`apps/api/src`) and e2e config in `apps/api/test/jest-e2e.json`.
+- Add/adjust tests for backend behavior changes.
+- Web has no configured test runner yet; if adding one, include scripts and conventions in `apps/web/package.json`.
 
 ## Commit & Pull Request Guidelines
-- Existing commits are short, lowercase, and imperative (e.g., “add auth page”). Follow that style.
-- PRs should include a clear summary, steps to verify, and screenshots for UI changes.
+- Commit style in history is short, lowercase, imperative (e.g., `add auth page`).
+- PRs should include:
+  - clear summary of behavior changes,
+  - verification steps/commands,
+  - screenshots for UI updates,
+  - env var or migration notes when auth/database changes are involved.
 
 ## Security & Configuration Tips
-- Use `.env.example` as the baseline and keep secrets in `.env.local` (never commit secrets).
-- When touching auth or database code, note any required env vars in the PR description.
+- Use `.env.example` as the baseline; keep secrets in local env files only.
+- Never commit credentials or production tokens.
+- Document required environment variables and migration steps in PR descriptions.
