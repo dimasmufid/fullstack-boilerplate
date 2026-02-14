@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import { getServerApiV1BaseUrl } from '@/lib/api-url';
 
 type SessionResponse = {
   data?: unknown;
@@ -6,17 +7,18 @@ type SessionResponse = {
 
 export async function getServerSession() {
   const requestHeaders = await headers();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  if (!apiUrl) {
+  const apiV1Url = getServerApiV1BaseUrl();
+  let response: Response;
+  try {
+    response = await fetch(`${apiV1Url}/auth/get-session`, {
+      headers: {
+        cookie: requestHeaders.get('cookie') ?? '',
+      },
+      cache: 'no-store',
+    });
+  } catch {
     return null;
   }
-
-  const response = await fetch(`${apiUrl}/api/v1/auth/get-session`, {
-    headers: {
-      cookie: requestHeaders.get('cookie') ?? '',
-    },
-    cache: 'no-store',
-  });
 
   if (!response.ok) {
     return null;

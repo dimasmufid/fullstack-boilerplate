@@ -1,19 +1,17 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import { config } from 'dotenv';
 import { resolve } from 'node:path';
+import { Pool } from 'pg';
 
 if (!process.env.DATABASE_URL) {
-  config({ path: '.env.local' });
-  config({ path: resolve(process.cwd(), '../../.env.local') });
+  config({ path: '.env' });
+  config({ path: resolve(process.cwd(), '../../.env') });
 }
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  throw new Error(
-    'Missing DATABASE_URL. Set it in your environment or .env.local.',
-  );
+  throw new Error('Missing DATABASE_URL. Set it in your environment or .env.');
 }
 
-const sql = neon(databaseUrl);
-export const db = drizzle({ client: sql });
+const pool = new Pool({ connectionString: databaseUrl });
+export const db = drizzle(pool);

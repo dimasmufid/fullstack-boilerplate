@@ -7,9 +7,16 @@
     "start": "turbo run start",
     "lint": "turbo run lint",
     "dev:web": "turbo run dev --filter=web",
-    "dev:api": "turbo run dev --filter=api"
+    "dev:api": "turbo run dev --filter=api",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
+    "db:push": "drizzle-kit push --config drizzle.config.ts"
   },
   "devDependencies": {
+    "@types/node": "^25.2.3",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.8",
+    "pg": "^8.16.3",
     "turbo": "^2.8.8"
   },
   "packageManager": "pnpm@10.3.0+sha512.ee592eda8815a8a293c206bb0917c4bb0ff274c50def7cbc17be05ec641fc2d1b02490ce660061356bd0d126a4d7eb2ec8830e6959fb8a447571c631d5a2442d"

@@ -1,8 +1,9 @@
 import { createAuthClient } from "better-auth/react"
 import { adminClient } from "better-auth/client/plugins"
+import { getClientApiV1BaseUrl } from "@/lib/api-url"
 
 export const authClient = createAuthClient({
-    baseURL: `${process.env.NEXT_PUBLIC_API_URL!}/api/v1/auth`,
+    baseURL: `${getClientApiV1BaseUrl()}/auth`,
     fetchOptions: {
         credentials: "include",
     },
