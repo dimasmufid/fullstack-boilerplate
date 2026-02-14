@@ -1,20 +1,4 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: fullstack_postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-app}
-      POSTGRES_DB: ${POSTGRES_DB:-boilerplate}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-boilerplate}"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   migrate:
     build:
       context: .
@@ -22,14 +6,11 @@ services:
       target: migrator
     container_name: fullstack_migrate
     restart: "no"
-    depends_on:
-      postgres:
-        condition: service_healthy
     env_file:
       - .env
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL_CONTAINER:-postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@${POSTGRES_HOST:-postgres}:5432/${POSTGRES_DB:-boilerplate}}
+      DATABASE_URL: ${DATABASE_URL}
 
   api:
     build:
@@ -45,7 +26,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 4000
-      DATABASE_URL: ${DATABASE_URL_CONTAINER:-postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-app}@${POSTGRES_HOST:-postgres}:5432/${POSTGRES_DB:-boilerplate}}
+      DATABASE_URL: ${DATABASE_URL}
     expose:
       - "4000"
 
@@ -65,6 +46,3 @@ services:
       NEXT_PUBLIC_API_URL: http://api:4000
     expose:
       - "3000"
-
-volumes:
-  postgres_data:
