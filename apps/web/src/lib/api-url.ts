@@ -13,7 +13,7 @@ export function getClientApiBaseUrl() {
 
 export function getServerApiBaseUrl() {
   const configuredServerUrl =
-    process.env.SERVER_API_URL?.trim() || process.env.INTERNAL_API_URL?.trim();
+    process.env.API_URL?.trim();
   const baseUrl = configuredServerUrl || getClientApiBaseUrl();
 
   return normalizeBaseUrl(baseUrl);
