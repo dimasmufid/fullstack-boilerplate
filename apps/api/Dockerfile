@@ -11,6 +11,10 @@ FROM deps AS builder
 COPY . .
 RUN pnpm --filter api build
 
+FROM builder AS migrator
+ENV NODE_ENV=production
+CMD ["pnpm", "db:migrate"]
+
 FROM base AS prod-deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY apps/api/package.json apps/api/package.json
